@@ -1,0 +1,61 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/site.css" rel="stylesheet" />
+    <link href="https://www.fontify.me/wf/5cadda71927d4c172de0ef26912edb13" rel="stylesheet" type="text/css">
+    <title>Not Found</title>
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            background: #EBEBEB;
+        }
+
+        .title {
+            background: linear-gradient(90deg, #D54F41 0%, #C41F50 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="col-md-6 left-side hidden-sm hidden-xs">
+        <div class="outerDiv">
+            <div class="innerDiv">
+                <img src="~/Img/not-found.png" class="img-responsive"/>
+            </div>
+        </div>
+     </div>
+  
+    <div class="col-md-6 right-side">
+        <div class="outerDiv">
+            <div class="innerDiv">
+                <div class="text-center">
+                    <p class="title">SOMETHING WENT<br> WRONG!</p>
+                    <p class="code-error">404</p>
+                    <p class="description">Not Found</p>
+                    <button class="btn btn-default" onclick="redirect('/Home/Index')">GO HOME</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function redirect(url){
+            window.location.replace(url)
+        }
+    </script>
+
+</body>
+</html>

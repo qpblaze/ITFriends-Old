@@ -1,0 +1,19 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+    ViewBag.Title = "Konan - View Post";
+}
+
+<style>
+    body {
+        background: url(../../Img/bg4.jpg);
+        background-repeat: no-repeat;
+        background-position: center 53px;
+        background-attachment: fixed;
+        background-size: cover;
+    }
+</style>
+
+
+<div class="posts">
+    @Html.Action("Posts", "Post", new { idPost = @ViewBag.IdPost})
+</div>

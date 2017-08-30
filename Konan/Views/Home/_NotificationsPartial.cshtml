@@ -1,0 +1,120 @@
+﻿@using Konan.Context
+@using Konan.Models
+
+@using (KonanDBContext _dc = new KonanDBContext())
+{
+    string sessionId = Session["Id"].ToString();
+    var frindRequests = _dc.FriendRequests.Where(m => m.Id_F == sessionId);
+    var posts = _dc.Posts.Where(m => m.Id_A == sessionId);
+    var likes = new List<Like>();
+    var comments = new List<Comment>();
+    var shares = new List<Post>();
+    foreach(var p in posts)
+    {
+        likes.AddRange(_dc.Likes.Where(m => m.Id_P == p.Id && m.Status == null && m.Id_A != sessionId));
+        comments.AddRange(_dc.Comments.Where(m => m.Id_P == p.Id && m.Status == null && m.Id_A != sessionId));
+        shares.AddRange(_dc.Posts.Where(m => m.Id_S == p.Id && m.Status == null));
+        
+    }
+    if (frindRequests.Count() == 0 && likes.Count() == 0 && comments.Count() == 0 && shares.Count() == 0)
+    {
+        <div class="dropdown">
+            <a href="" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-default btn-lg btn-link"><span class="glyphicon glyphicon-send"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                <li>Nothing to see here</li>
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div class="dropdown">
+            <a href="" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="btn btn-default btn-lg btn-link"><span class="glyphicon glyphicon-send notification"></span></a>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                @foreach (var item in frindRequests)
+                {
+                    var account = _dc.Accounts.Where(m => m.Id == item.Id_A).FirstOrDefault();
+                    <li>
+                        <div class="col-xs-2 col-sm-2 col-md-2">
+                            <div class="header-avatar article-avatar" style="background-image: url(@account.ImageUrl)"></div>
+                        </div>
+                        <div class="col-xs-10 col-sm-10 col-md-10">
+                            <a href="@Url.Action("ViewProfile", "Account", new { id = account.Id })">@account.FirstName&nbsp;@account.LastName send you friend requests</a>
+                            @using (Html.BeginForm("FriendRequest", "Account", FormMethod.Post))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" id="id" name="id" value="@item.Id" />
+                                <button name="submit" type="submit" class="btn btn-default" id="acceptBtn" value="Accept">Accept</button>
+                                <button name="submit" type="submit" class="btn btn-default" id="declineBtn" value="Decline">Decline</button>
+                            }
+                        </div>
+                    </li>
+
+                    <li role="separator" class="divider col-md-12"></li>
+                    
+                }
+                @foreach (var item in likes)
+                {
+                    <li >
+                        <div class="col-xs-2 col-sm-2 col-md-2">
+                            <div class="header-avatar article-avatar" style="background-image: url(@item.Account.ImageUrl)"></div>
+                        </div>
+                        <div class="col-xs-9 col-sm-8 col-md-9 text-vcenter">
+                            <a href="@Url.Action("ViewPost", "Post", new { id = item.Id_P })">@item.Account.FirstName&nbsp;@item.Account.LastName liked your post</a>
+                        </div>
+                        <div class="col-xs-1 col-sm-2 col-md-1 removeNot">
+                            <a onclick="removeNotification('@item.Id')" style="cursor: pointer;"><span class="glyphicon glyphicon-remove"></span></a>
+                        </div>
+
+                    </li>
+                    if (item != likes.Last() || comments.Count() != 0)
+                    {
+                        <li role="separator" class="divider col-xs-12 col-sm-12 col-md-12"></li>
+                    }
+                }
+                @foreach (var item in comments)
+                {
+                    <li>
+                        <div class="col-xs-2 col-sm-2 col-md-2">
+                            <div class="header-avatar article-avatar" style="background-image: url(@item.Account.ImageUrl)"></div>
+                        </div>
+                        <div class="col-xs-9 col-sm-8 col-md-9 text-vcenter">
+                            <a href="@Url.Action("ViewPost", "Post", new { id = item.Id_P })">@item.Account.FirstName&nbsp;@item.Account.LastName commented on your post</a>
+                        </div>
+                        <div class="col-xs-1 col-sm-2 col-md-1 removeNot">
+                            <a onclick="removeNotification('@item.Id')" style="cursor: pointer;"><span class="glyphicon glyphicon-remove"></span></a>
+                        </div>
+
+                    </li>
+                    if (item != comments.Last() || shares.Count() != 0)
+                    {
+                        <li role="separator" class="divider col-xs-12 col-sm-12 col-md-12"></li>
+                    }
+                }
+                @foreach (var item in shares)
+                {
+                    <li>
+                        <div class="col-xs-2 col-sm-2 col-md-2">
+                            <div class="header-avatar article-avatar" style="background-image: url(@item.Account.ImageUrl)"></div>
+                        </div>
+                        <div class="col-xs-9 col-sm-8 col-md-9 text-vcenter">
+                            <a href="@Url.Action("ViewPost", "Post", new { id = item.Id })">@item.Account.FirstName&nbsp;@item.Account.LastName shared your post</a>
+                        </div>
+                        <div class="col-xs-1 col-sm-2 col-md-1 removeNot">
+                            <a onclick="removeNotification('@item.Id')" style="cursor: pointer;"><span class="glyphicon glyphicon-remove"></span></a>
+                        </div>
+
+                    </li>
+                    if (item != shares.Last())
+                    {
+                        <li role="separator" class="divider col-xs-12 col-sm-12 col-md-12"></li>
+                    }
+                }
+
+
+
+            </ul>
+        </div>
+    }
+
+
+}

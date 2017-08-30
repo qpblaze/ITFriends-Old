@@ -1,0 +1,208 @@
+﻿@model IEnumerable<Konan.Models.Post>
+@using Konan.Models;
+@foreach (var item in Model)
+{
+   
+    <div class="row no-gutter post" id="@item.Id">
+        <div class="col-md-8 col-md-offset-2 feed-article">
+            <div class="article-header">
+                <div class="form-inline text-center">
+                    <div class="form-group pull-left" >
+                        <div class="header-avatar article-avatar" style="background-image: url(@item.Account.ImageUrl)"></div>
+                    </div>
+                    <div class="form-group pull-left">
+                        <a href=@Url.Action("ViewProfile", "Account", new { id = item.Account.Id})><h4>@item.Account.FirstName&nbsp;@item.Account.LastName
+                        @if(item.Id_S != null)
+                        {
+                            <i>shared</i>
+                        }
+                            </h4></a>
+                        @{
+                            //var date = Convert.ToDateTime(@Html.DisplayFor(m => item.Date).ToString());
+                            //var localNow = TimeZoneInfo.ConvertTimeFromUtc(date, TimeZoneInfo.Local);
+                            <p class="pull-left">@Html.DisplayFor(m => item.Date)</p>
+                        }
+                       
+                    </div>
+                    <div class="form-group pull-right">
+                        @if (Session["Id"].ToString() == item.Id_A)
+                        {
+                            <div class="text-right">
+                                <div class="dropdown">
+                                    <a data-id="@item.Id" class="dropbtn">
+                                        <span class="glyphicon glyphicon-align-left"></span>
+                                    </a>
+                                    <div class="dropdown-content drop">
+                                        <a data-id="@item.Id" style="cursor: pointer" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true" class="delete last">
+                                            @if (item.Visibility == "private")
+                                            {
+                                                <span class="glyphicon glyphicon-lock vis"><span class="caret"></span></span>
+                                            }
+                                            else if (item.Visibility == "friends")
+                                            {
+                                                <span class="glyphicon glyphicon-user vis"><span class="caret"></span></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="glyphicon glyphicon-globe vis"><span class="caret"></span></span>
+                                            }
+
+                                                        
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-right visibility" aria-labelledby="dropdownMenu1">
+                                            <li><a onclick="changeVisibility(this, '@item.Id')"><span class="glyphicon glyphicon-lock"></span></a></li>
+                                            <li><a onclick="changeVisibility(this, '@item.Id')"><span class="glyphicon glyphicon-user"></span></a></li>
+                                            <li><a onclick="changeVisibility(this, '@item.Id')"><span class="glyphicon glyphicon-globe"></span></a></li>
+                                        </ul>
+                                        <a data-id="@item.Id" style="cursor: pointer" data-toggle="modal" data-target="#deleteModal" class="delete"><span class="glyphicon glyphicon-trash"></span></a>
+                                        <a data-id="@item.Id" style="cursor: pointer" class="edit"><span class="glyphicon glyphicon-pencil"></span></a>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        }
+                    </div>
+                </div>                
+            </div>
+            <div class="postContent">
+               
+                @if (item.ImageUrl != null)
+                {
+                    <div class="text-center">
+                        <img src="@(Url.Content(item.ImageUrl))" class="article-image" />
+                    </div>
+                }
+                <div class="post-details">
+                    @if (!string.IsNullOrEmpty(item.Title))
+                    {
+                        <h2 class="post-title">@item.Title</h2>
+                    }
+                    else
+                    {
+                        <br />
+                    }
+                    @if (!string.IsNullOrEmpty(item.Description))
+                    {
+                        <p class="post-description">@item.Description</p>
+                    }
+
+                    @if (Request.Url.AbsoluteUri.Contains("ViewPost") && item.Output != null)
+                    {
+                        <div class="input-output">
+                            <p><b>Input: </b>@item.Input</p>
+                            <p ><b>Output: </b>@item.Output</p>
+                        </div>
+                        <div class="form-group no-gutter">
+                            <div class="col-md-12">
+                                <button class="btn btn-default btn-see-more" onclick="redirect('/Problems/Solve/'+'@item.Id')">Solve</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="editPost hidden">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        @Html.TextBoxFor(m => @item.Title, new { @class = "form-control f-control", @placeHolder = "enter a title..." })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        @Html.TextAreaFor(m => @item.Description, new { @class = "form-control f-description f-control", @placeHolder = "enter a description..." })
+                    </div>
+                </div>
+                <div class="form-inline">
+                    <div class="form-group f-control">
+                        <div class="col-md-4 col-md-pull-6">
+                        </div>
+                    </div>
+
+                    <div class="form-group pull-right f-control">
+                        <div class="col-sm-12 text-right">
+                            <input data-id="@item.Id" type="button" value="SAVE" class="btn btn-default savePost"/>
+                        </div>
+                    </div>
+                </div>
+                <br />
+                <br/>
+            </div>
+           
+            <div class="footer">
+                @if (item.Output != null)
+                {
+                    if (!Request.Url.AbsoluteUri.Contains("ViewPost"))
+                    {
+                        <div class="form-group no-gutter">
+                            <div class="col-md-12">
+                                <button class="btn btn-default btn-see-more" onclick="redirect('/Post/ViewPost/' + '@item.Id')">See More</button>
+                            </div>
+                        </div>
+                    }
+
+                }
+                else
+                {
+                    <div class="article-footer text-center">
+                        @{
+                            var l = new Like();
+                            using (Konan.Context.KonanDBContext _dc = new Konan.Context.KonanDBContext())
+                            {
+                                string sessionId = Session["Id"].ToString();
+                                l = _dc.Likes.Where(m => m.Id_P == item.Id && m.Id_A == sessionId).FirstOrDefault();
+                            }
+                            if (l != null)
+                            {
+                                <a onclick="likePost('@item.Id')" class="pull-left" data-toggle="tooltip" data-placement="top" title="Like"><span class="glyphicon glyphicon-thumbs-up  text-orange"></span></a>
+                            }
+                            else
+                            {
+                                <a onclick="likePost('@item.Id')" class="pull-left" data-toggle="tooltip" data-placement="top" title="Like"><span class="glyphicon glyphicon-thumbs-up"></span></a>
+                            }
+                        }
+
+                        <a onclick="toggler('#@item.Id .article-comments');" data-toggle="tooltip" data-placement="bottom" title="Comments"><span class="glyphicon glyphicon-menu-hamburger fa-2x"></span></a>
+                        <a onclick="sharePost('@item.Id')" class="pull-right" data-toggle="tooltip" data-placement="top" title="Share"><span class="glyphicon glyphicon-share"></span></a>
+                    </div>
+
+                    <div class="article-comments">
+                        <div class="post-comm">
+                            @Html.Action("Comments", "Post", new { id = item.Id })
+                        </div>
+                        @using (Ajax.BeginForm("AddComment", "Post", new AjaxOptions { HttpMethod = "POST", OnSuccess = "reloadComments(this)" }, new { id = item.Id }))
+                        {
+                            <input type="hidden" id="id" value="@item.Id" name="id" />
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input class="form-control" placeholder="enter your comment..." name="comment" id="comment" autocomplete="off">
+                                </div>
+                            </div>
+                        }
+
+                    </div>
+                  }
+                
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" class="glyphicon glyphicon-remove"></span></button>
+                <h4 class="modal-title"><b>Delete Post</b></h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this post?<br />
+                All your content and comments will be deleted!
+            </div>
+            <div class="modal-footer">
+                <a data-dismiss="modal">Close</a>
+                <button type="button" class="btn btn-default confirmDelete">DELETE</button>
+            </div>
+        </div>
+    </div>
+</div>

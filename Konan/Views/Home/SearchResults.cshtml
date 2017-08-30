@@ -1,0 +1,73 @@
+﻿@using Konan.Models
+@using Konan.Context
+@model IEnumerable<Account>
+
+@foreach (var item in Model)
+{
+    string sessionId = Session["Id"].ToString();
+    <div class="row result">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="form-inline">
+                <div class="form-group">
+                    <div class="header-avatar article-avatar" style="background-image: url(@item.ImageUrl)"></div>
+                </div>
+                <div class="form-group ">
+                    <a href=@Url.Action("ViewProfile", "Account", new { id = @item.Id }) class="name"><h4>@item.FirstName&nbsp;@item.LastName</h4></a>
+                </div>
+                <div class="form-group pull-right">
+                    @{
+                    var friend = new Friend();
+                    var friendRequest = new FriendRequest();
+                    using (KonanDBContext _dc = new KonanDBContext())
+                    {
+                        
+                        friend = _dc.Friends.Where(m => (m.Id_A == sessionId && m.Id_F == item.Id) || (m.Id_F == sessionId && m.Id_A == item.Id)).FirstOrDefault();
+                        friendRequest = _dc.FriendRequests.Where(m => (m.Id_A == item.Id && m.Id_F == sessionId) || (m.Id_F == item.Id && m.Id_A == sessionId)).FirstOrDefault();
+                    }
+
+                    if (friendRequest != null)
+                    {
+                      
+                        using (Ajax.BeginForm("FriendRequest", "Account", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "reloadSearchResults()" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" id="id" name="id" value="@friendRequest.Id" />
+                            if (friendRequest.Id_F == sessionId)
+                            {
+                                <button name="submit" type="submit" value="Accept" class="btn btn-default"><span class="glyphicon glyphicon-ok"></span> CONFIRM</button>
+                            }
+                            else
+                            {
+                                <button name="submit" type="submit" value="Decline" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span> CANCEL REQUEST</button>
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        if (friend == null)
+                        {
+                            using (Ajax.BeginForm("FriendRequests", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "reloadSearchResults()" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" id="id" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-plus"></span> ADD FRIEND</button>
+                            }
+                        }
+                        else
+                        {
+                            using (Ajax.BeginForm("RemoveFriend", "Account", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "reloadSearchResults()" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" id="id" name="id" value="@item.Id" />
+                                <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span> REMOVE FRIEND</button>
+                            }
+                        }
+                    }
+}
+                </div>
+            </div>
+        </div>
+    </div>
+}

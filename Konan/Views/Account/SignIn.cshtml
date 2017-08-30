@@ -1,0 +1,107 @@
+﻿@using Konan.Models
+@model SignInViewModel
+@{
+    ViewBag.Title = "IT Friends - Sign In";
+    Layout = null;
+}
+
+@System.Web.Optimization.Styles.Render("~/Content/css")
+
+
+<link rel="shortcut icon" type="image/png" href="~/Img/logo-new-konan.png" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="title" content="IT Friends">
+<meta name="description" content="Discover a new and modern way to use your everyday online activities. Bring and chat with your friends, share your pictures resolve programming pronlems, meet new people and more!">
+<meta name="keywords" content="Ursaciuc" />
+<meta name="keywords" content="Adrian" />
+<meta name="keywords" content="Ursaciuc Adrian" />
+<meta name="keywords" content="IT Friends" />
+<meta name="keywords" content="Romania" />
+<meta name="keywords" content="ursaciuc-adrian.tech" />
+<meta name="author" content="Ursaciuc Adrian" />
+
+<title>
+    IT Friends - Sign In
+</title>
+<style>
+    body {
+        background: url(../../Img/bg_01.jpg);
+        background-repeat: no-repeat;
+        background-position: center;
+        background-position-x: -320px;
+        background-attachment: fixed;
+        background-size: cover;
+        background-position-x: -100px;
+    }
+
+    ul {
+        list-style-type: none;
+        -webkit-padding-start: 0;
+    }
+</style>
+<div class="col-sm-7 l-content">
+    <div class="text-center">
+        <h1>You don't have an account yet?</h1><br />
+        @Html.ActionLink("SIGN UP", "SignUp", "Account", null, new { @class = "btn btn-default" })
+        <br /><br /><h3>Discover a new and modern way to use your everyday online activities.<br />Bring and chat with your friends, share your pictures resolve programming pronlems, meet new people and more!</h3>
+    </div>
+</div>
+<div class="col-sm-5 r-content">
+    <div class="row">
+        <div class="col-sm-12">
+            @using (Ajax.BeginForm("SignIn", "Account", new AjaxOptions { HttpMethod = "POST", OnSuccess = "$.get('/Home/Index', function(html){$('body').html(html); })" }, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <img src="~/Img/konan-2.2.png" class="img-responsive center-block" alt="IT Friends - Logo" />
+                <h1 class="text-center logo-text orange-text"></h1><br />
+                <h1>Sign In</h1>
+                <h4><i>Welcome back!</i></h4>
+                <br />
+
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeHolder = "enter your email..." })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeHolder = "enter your password..." })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-12 text-right">
+                        <a href="@Url.Action("RecoverPassword", "Account")" class="orange-text">Forgot password?</a>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <p>@Html.ValidationSummary(true, "", new { @class = "form-alert bg-danger" })</p>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-12 text-right">
+                        <input type="submit" value="SIGN IN" class="btn btn-default" />
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+@System.Web.Optimization.Scripts.Render("~/bundles/jquery")
+@System.Web.Optimization.Scripts.Render("~/bundles/bootstrap")
+<script>
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date(); a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-89625639-1', 'auto');
+    ga('send', 'pageview');
+
+</script>

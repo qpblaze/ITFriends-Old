@@ -1,0 +1,158 @@
+﻿@using Konan.Models
+@model Solution
+@{
+    ViewBag.Title = "Solution";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+<link type="text/css" rel="stylesheet" href="~/Content/codemirror.css" />
+<link href="~/Content/elegant.css" rel="stylesheet" />
+
+
+
+<div class="col-md-12 no-gutter">
+    <br /><br />
+    <div class="form-inline options">
+        <div class="form-group">
+            <div class="lang">
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                        <li><a onclick="changeLanguage('C')">C</a></li>
+                        <li><a onclick="changeLanguage('CPP')">C++</a></li>
+                        <li><a onclick="changeLanguage('CLOJURE')">Clojure</a></li>
+                        <li><a onclick="changeLanguage('CSHARP')">C#</a></li>
+                        <li><a onclick="changeLanguage('JAVA')">Java</a></li>
+                        <li><a onclick="changeLanguage('JAVASCRIPT')">JavaScript</a></li>
+                        <li><a onclick="changeLanguage('HASKELL')">Haskell</a></li>
+                        @*<li><a onclick="changeLanguage('PERL')">Perl</a></li>*@
+                        <li><a onclick="changeLanguage('PHP')">PHP</a></li>
+                        <li><a onclick="changeLanguage('PYTHON')">Python</a></li>
+                        <li><a onclick="changeLanguage('RUBY')">Ruby</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <button id="compile" class="btn btn-default"><span class="glyphicon glyphicon-play"></span> RUN</button>
+        </div>
+    </div>
+
+    <div class="form-group no-gutter">
+        <div class="col-md-12 no-gutter">
+            <textarea id="code" rows="80">@Model.Code.Replace("&lt;", "<").Replace("&gt;", ">")</textarea>
+        </div>
+    </div>
+
+    <div class="form-group no-gutter">
+        <div class="col-md-12 no-gutter">
+            <input type="text" class="form-control f-control" id="input" placeHolder="enter the input..." value=@Model.Post.Input />
+        </div>
+    </div>
+
+    <div class="form-group no-gutter">
+        <div class="col-md-12 no-gutter">
+            <input type="text" class="form-control f-control" id="output" readonly value="@Model.Output"/>
+        </div>
+    </div>
+    <div class="form-group no-gutter">
+        <div class="col-md-12 no-gutter">
+            <div class="errors">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="loading-modal"></div>
+
+@section body_scripts
+{
+<script src="~/Scripts/jquery-3.1.1.js"></script>
+    <script type="text/javascript" src="~/Scripts/codemirror.js"></script>
+    <script src="~/Scripts/clike.js"></script>
+    <script type="text/javascript" src="~/Scripts/javascript.js"></script>
+ 
+    <script src="~/Scripts/scripts.js"></script>
+    <script type="text/javascript">
+    var editor = CodeMirror.fromTextArea(
+        document.getElementById("code"), {
+            lineNumbers: true,
+            matchBrackets: true, mode: "text/x-csharp"
+        });
+
+    $(document).bind('keydown', function (e) {
+        if (e.ctrlKey && (e.which == 83)) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    $(document).ready(function () {
+
+        var l;
+        var lan = '@Model.Language'
+        if (lan == "CPP") {
+            l = "C++"
+            editor.setOption("mode", "text/x-c++src");
+        }
+
+        if (lan == "CSHARP") {
+            l = "C#"
+            editor.setOption("mode", "text/x-csharp");
+        }
+
+        if (lan == "C") {
+            l = "C"
+            editor.setOption("mode", "text/x-csrc");
+        }
+
+        if (lan == "CLOJURE") {
+            l = "Clojure"
+            editor.setOption("mode", "text/x-clojure");
+        }
+
+        if (lan == "JAVA") {
+            l = "Java"
+            editor.setOption("mode", "text/x-java");
+        }
+
+        if (lan == "JAVASCRIPT") {
+            l = "JavaScript"
+            editor.setOption("mode", "text/javascript");
+        }
+
+        if (lan == "HASKELL") {
+            l = "Haskel"
+            editor.setOption("mode", "text/x-haskell");
+        }
+
+        if (lan == "PERL") {
+            l = "Perl"
+            editor.setOption("mode", "text/x-perl");
+        }
+
+        if (lan == "PHP") {
+            l = "PHP"
+            editor.setOption("mode", "text/x-php");
+        }
+
+        if (lan == "PYTHON") {
+            l = "Python"
+            editor.setOption("mode", "text/x-python");
+        }
+
+        if (lan == "RUBY") {
+            l = "Ruby"
+            editor.setOption("mode", "text/x-ruby");
+        }
+        $('.lang .btn').html("Language (" + l + ") <span class=\"caret\"></span>")
+
+        lang = lan
+    });
+    </script>
+
+}
+
+
+
+

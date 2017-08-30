@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewBag.Title = "IT Friends - Admin Area";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<style>
+    .btn-nav{
+        width: 100%;
+        border-radius: 0px;
+        height: 50px;
+        font-size: 20px;
+    }
+    .admin-content{
+        margin-top: 50px;
+    }
+</style>
+
+<div class="jumbotron">
+    <div class="row text-center">
+        <div class="col-sm-4 col-md-4">
+            <button class="btn btn-default btn-nav" onclick="showAccounts()">Accounts</button>
+        </div>
+        <div class="col-sm-4 col-md-4">
+            <button class="btn btn-default btn-nav" onclick="showPosts()">Posts</button>
+        </div>
+        <div class="col-sm-4 col-md-4">
+            <button class="btn btn-default btn-nav" onclick="showOthers()">Others</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="admin-content">
+        </div>
+    </div>
+</div>

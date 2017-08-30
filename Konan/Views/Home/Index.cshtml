@@ -1,0 +1,112 @@
+﻿@model Konan.Models.Post
+@{
+    ViewBag.Title = "IT Friends - Home";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<div class="row no-gutter pHeader">
+    @*<iframe width="560"
+            height="315"
+            src="http://www.youtube.com/embed/dwqDGLQIINY"
+            frameborder="0"
+            allowfullscreen>
+
+    </iframe>
+    <img src="http://img.youtube.com/vi/dHhr30207JY/mqdefault.jpg"/>*@
+    <div class="col-md-8 col-md-offset-2 feed-header">
+        <a onclick="toggler('.create-article')"><span class="glyphicon glyphicon-edit" data-toggle="tooltip" data-placement="bottom" title="Create new post"></span></a>
+    </div>
+</div>
+
+<div class="row no-gutter">
+    <div class="col-md-8 col-md-offset-2 create-article">
+        <div>
+            <div class="row">
+            </div>
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#createPostTab" aria-controls="post" role="tab" data-toggle="tab">Create Post</a></li>
+                <li role="presentation"><a href="#createProblemTab" aria-controls="problem" role="tab" data-toggle="tab">Add Problem</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane fade in active" id="createPostTab">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(m => m.Title, new { @class = "form-control", @placeHolder = "enter a title..." })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control f-description", @placeHolder = "enter a description..." })
+                        </div>
+                    </div>
+                    <div class="form-inline">
+                        <div class="form-group">
+                            <div class="col-md-4 col-md-offset-8">
+                                <div class="dropdown">
+                                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        <span id="vis" class="glyphicon glyphicon-globe">&nbsp;</span>Visibility
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenu1">
+                                        <li><a onclick="changeVisibility(this)"><span class="glyphicon glyphicon-lock"></span>&nbsp;&nbsp;&nbsp;Only me</a></li>
+                                        <li><a onclick="changeVisibility(this)"><span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;&nbsp;Friends</a></li>
+                                        <li><a onclick="changeVisibility(this)"><span class="glyphicon glyphicon-globe"></span>&nbsp;&nbsp;&nbsp;Public</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-4 col-md-pull-6">
+                                <label for="file-upload" class="k-file-upload">
+                                    <i class="glyphicon glyphicon-cloud-upload"><span id="file-name"></span></i>
+                                </label>
+                                @Html.TextBoxFor(m => m.File, new { type = "file", @id = "file-upload" })
+                            </div>
+                        </div>
+
+                        <div class="form-group pull-right">
+                            <div class="col-sm-12 text-right">
+                                <input id="createPost" type="button" value="POST" class="btn btn-default disabled" disabled="disabled" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane fade in" id="createProblemTab">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(m => m.Title, new { @class = "form-control", @id="p-title", @placeHolder = "enter a title..." })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control f-description", @id = "p-description", @placeHolder = "enter the problem text..." })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(m => m.Input, new { @class = "form-control f-control", @id = "p-input", @placeHolder = "enter the input..." })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            @Html.TextBoxFor(m => m.Output, new { @class = "form-control f-control", @id = "p-output", @placeHolder = "enter the output..." })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-12 text-right">
+                            <input id="addProblem" type="button" value="ADD" class="btn btn-default disabled f-control" disabled="disabled" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="posts">
+    @Html.Action("Posts", "Post")
+</div>
+
+<div class="loading-modal"></div>

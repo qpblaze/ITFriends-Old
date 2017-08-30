@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewBag.Title = "IT Friends - Search";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+
+<div class="row no-gutter">
+    <div class="col-md-8 col-md-offset-2 search">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                @using (Ajax.BeginForm("SearchResults", "Home", new AjaxOptions { HttpMethod = "POST", InsertionMode = InsertionMode.Replace, OnSuccess = "reloadSearchResults()" }, new { id = "searchForm" }))
+                {
+                    <div class="form-group">
+                        <input class="form-control" placeholder="Start typing..." name="q" id="q" />
+                    </div>
+                }
+                
+            </div> 
+        </div>
+        <div class="searchResults">
+            @Html.Action("SearchResults", "Home", new { q = ""})
+        </div> 
+   </div>
+</div>

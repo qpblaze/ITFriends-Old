@@ -1,0 +1,35 @@
+﻿@using Konan.Models;
+@model IEnumerable<Comment>
+
+
+@if (Model.Count() == 0)
+{
+    <p class="text-center">No comments here. Be first to write a comment</p>
+
+}
+
+<div class="post-comments">
+    @foreach (var item in Model)
+    {
+        <div class="row">
+            <div class="col-xs-2 col-sm-1 col-sm-offset-1 col-md-1 col-md-offset-1 image">
+                <div class="header-avatar article-avatar" style="background-image: url(@item.Account.ImageUrl)"></div>
+            </div>
+            <div class="col-xs-9 col-sm-9 col-md-9 comment-details">
+                <a href=@Url.Action("ViewProfile", "Account", new { id = item.Account.Id}) style="text-decoration: none"><h4>@item.Account.FirstName&nbsp;@item.Account.LastName</h4></a>
+                <p class="comment">@item.CommentT</p>
+            </div>
+            <div class="col-xs-1 col-sm-1 col-md-1">
+                @if (Session["Id"].ToString() == item.Id_A)
+                {
+                    <div class="text-right">
+                        <a style="cursor: pointer" data-id="@item.Id_P" class="deleteComment" data-toggle="modal" onclick="deleteComment('@item.Id', this)" data-placement="left" title="Delete" data-target="tooltip"><span class="glyphicon glyphicon-trash"></span></a>
+                    </div>
+
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<hr />

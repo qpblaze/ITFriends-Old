@@ -1,0 +1,27 @@
+﻿@using Konan.Models
+@model IEnumerable<Chat>
+
+<div class="chat">
+    @foreach (var item in Model)
+    {
+        <div class="row no-gutter">
+            @if (item.FromId == Session["Id"].ToString())
+            {
+            <div class="msg msg-right pull-right">
+                <p>@item.Message</p>
+            </div>
+            <br />
+            }
+            else
+            {
+            <div class="msg msg-left">
+                <p>@item.Message</p>
+            </div>
+            <br />
+            }
+        </div>
+       
+
+    }
+
+</div>
